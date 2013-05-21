@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Extension-Name: json
+Class-Manager: org.nlogo.extensions.json.JSONExtension
+NetLogo-Extension-API-Version: 5.0
