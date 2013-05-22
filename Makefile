@@ -21,7 +21,7 @@ JAR_REPO=http://ccl.northwestern.edu/devel/
 
 $(EXT_NAME).jar $(EXT_NAME).jar.pack.gz: $(SRCS) manifest.txt Makefile
 	mkdir -p classes
-	scalac -deprecation -unchecked -encoding us-ascii -classpath $(NETLOGO)/NetLogo.jar -d classes $(SRCS)
+	$(SCALA_HOME)/bin/scalac -deprecation -unchecked -encoding us-ascii -classpath $(NETLOGO)/NetLogo.jar -d classes $(SRCS)
 	jar cmf manifest.txt $(EXT_NAME).jar -C classes .
 	pack200 --modification-time=latest --effort=9 --strip-debug --no-keep-file-order --unknown-attribute=strip $(EXT_NAME).jar.pack.gz $(EXT_NAME).jar
 
