@@ -17,9 +17,14 @@ object JSONParser extends DefaultReporter {
   override def getSyntax = reporterSyntax(Array(StringType), WildcardType)
 
   def convert: PartialFunction[Any, AnyRef] = {
-    case l: List[_] => (l map(convert)).toLogoList
+    case l: List[_] => {
+      // toLogoList tries to convert everything via toLogoObject, but we don't
+      // want Maps converted, so we create a LogoList directly
+      LogoList.fromIterator((l map(convert)).iterator)
+    }
     case m: Map[_, _] => m mapValues(convert)
-    case x => x.toString
+    case x: Double => x: java.lang.Double
+    case s => s.toString
   }
 
   def report(args: Array[Argument], context: Context): AnyRef = {
