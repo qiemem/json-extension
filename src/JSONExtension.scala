@@ -18,6 +18,7 @@ object JSONParser extends DefaultReporter {
 
   def convert: PartialFunction[Any, AnyRef] = {
     case l: List[_] => (l map(convert)).toLogoList
+    case m: Map[_, _] => m mapValues(convert)
     case x => x.toString
   }
 
