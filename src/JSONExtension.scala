@@ -13,6 +13,9 @@ class JSONExtension extends DefaultClassManager {
     primitiveManager.addPrimitive("parse", JSONParser)
     primitiveManager.addPrimitive("item", MapItem)
     primitiveManager.addPrimitive("nested-item", MapNestedItem)
+    primitiveManager.addPrimitive("keys", MapKeys)
+    primitiveManager.addPrimitive("values", MapValues)
+    primitiveManager.addPrimitive("member?", MapMember)
   }
 }
 
@@ -35,7 +38,7 @@ object JSONParser extends DefaultReporter {
       JSON.parseFull(args(0).getString) map(convert) getOrElse (throw new ExtensionException("Invalid JSON string"))
     } catch {
       case e: LogoException =>
-        throw new ExtensionException(e.getMessage)
+        throw new ExtensionException(e.getMessage + "\n" + args(0).getString)
     }
   }
 }
@@ -60,6 +63,30 @@ object MapNestedItem extends DefaultReporter {
 
   def report(args: Array[Argument], context: Context): AnyRef =
     args.tail.foldLeft(args(0).get)((m: AnyRef, k: Argument) => MapItem.get(m, k.get))
+}
+
+object MapKeys extends DefaultReporter {
+  override def getSyntax =
+    reporterSyntax(Array(WildcardType), ListType)
+
+  def report(args: Array[Argument], context: Context): LogoList =
+    LogoList.fromIterator((args(0).get.asInstanceOf[Map[String, AnyRef]].keys).iterator)
+}
+
+object MapValues extends DefaultReporter {
+  override def getSyntax =
+    reporterSyntax(Array(WildcardType), ListType)
+
+  def report(args: Array[Argument], context: Context): LogoList =
+    LogoList.fromIterator((args(0).get.asInstanceOf[Map[String, AnyRef]].values).iterator)
+}
+
+object MapMember extends DefaultReporter {
+  override def getSyntax =
+    reporterSyntax(Array(StringType, WildcardType), BooleanType)
+
+  def report(args: Array[Argument], context: Context): java.lang.Boolean =
+    args(1).get.asInstanceOf[Map[String, AnyRef]] contains args(0).getString
 }
 /*
 object JSONMap extends MapFactory[JSONMap] {
