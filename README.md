@@ -1,4 +1,4 @@
-JSON Extesnsion
+JSON Extension
 ===
 
 Functions:
